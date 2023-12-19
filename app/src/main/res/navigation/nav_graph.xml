@@ -92,18 +92,18 @@
             app:argType="com.example.shppprojects.data.model.Contact" />
     </fragment>
     <fragment
-        android:id="@+id/userProfileFragment"
-        android:name="com.example.shppprojects.presentation.ui.fragments.userprofile.UserProfileFragment"
+        android:id="@+id/userProfile"
+        android:name="com.example.shppprojects.presentation.ui.fragments.userprofile.UserProfile"
         android:label="UserProfile"
         tools:layout="@layout/fragment_profile">
         <argument
-            android:name="userProfile"
+            android:name="userData"
             app:argType="com.example.shppprojects.data.model.UserWithTokens" />
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
         android:name="com.example.shppprojects.presentation.ui.fragments.userprofile.editprofile.EditProfileFragment"
-        android:label="EditProfile"
+        android:label="EditProfileFragment"
         tools:layout="@layout/fragment_edit_profile" >
         <argument
             android:name="userData"
@@ -130,6 +130,5 @@
             android:id="@+id/action_addContactsFragment_to_contactProfileFragment"
             app:destination="@id/contactProfileFragment" />
     </fragment>
-
 
 </navigation>

@@ -20,11 +20,11 @@ class AccountRepositoryImpl @Inject constructor(
     override suspend fun registerUser(@Body body : UserRequest) : UserApiResultState {
         return try {
             val response = service.registerUser(body)
-            log(response.toString())
+            log("response register user: $response")
             response.data?.let { UserApiResultState.Success(it) } ?:
             UserApiResultState.Error(R.string.invalid_request)
         } catch (e : Exception) {
-            log(e.toString())
+            log("exception register user: $e")
             UserApiResultState.Error(R.string.register_error_user_exist)
         }
     }
@@ -41,7 +41,7 @@ class AccountRepositoryImpl @Inject constructor(
 
     override suspend fun getUser(userId : Long, accessToken : String) : UserApiResultState {
         return try {
-            val response = service.getUser(userId, "$AUTHORIZATION_PREFIX$accessToken")
+            val response = service.getUser(userId, "$AUTHORIZATION_PREFIX $accessToken")
             response.data?.let { UserApiResultState.Success(it) } ?:
             UserApiResultState.Error(R.string.invalid_request)
         } catch (e : Exception) {
@@ -52,11 +52,13 @@ class AccountRepositoryImpl @Inject constructor(
     override suspend fun editUser(userId: Long, accessToken: String, name : String, career: String?,
                                   phone: String, address: String?, birthday: Date?) : UserApiResultState {
         return try {
-            val response = service.editUser(userId, "$AUTHORIZATION_PREFIX$accessToken",
+            val response = service.editUser(userId, "$AUTHORIZATION_PREFIX $accessToken",
                 name, career, phone, address, birthday)
+            log("response edit user: $response")
             response.data?.let { UserApiResultState.Success(it) } ?:
             UserApiResultState.Error(R.string.invalid_request)
         } catch (e : Exception) {
+            log("edit user exception: ${e.toString()}")
             UserApiResultState.Error(R.string.invalid_request)
         }
     }
@@ -69,12 +71,12 @@ class AccountRepositoryImpl @Inject constructor(
                     password = password
                 )
             )
-            log(response.toString() + "autologin")
+            log("autologin: $response")
             response.data?.let { UserApiResultState.Success(it) } ?: UserApiResultState.Error(
                 R.string.invalid_request
             )
         } catch (e : Exception) {
-            log(e.toString())
+            log("autologin exception: $e")
             UserApiResultState.Error(R.string.automatic_login_error)
         }
     }

@@ -163,15 +163,15 @@ class ContactsFragment : BaseFragment<FragmentContactsBinding>(FragmentContactsB
 
     private fun addContacts() {
         binding.textViewAddContacts.setOnClickListener {
-//            val direction = ViewPagerFragmentDirections.actionViewPagerFragmentToAddContactsFragment(
-//                UserWithTokens (
-//                    args.userData.user,
-//                    args.userData.accessToken,
-//                    args.userData.refreshToken
-//                )
-//            )
-//            closeSearchView()
-//            navController.navigate(direction)
+            val direction = ViewPagerFragmentDirections.actionViewPagerFragmentToAddContactsFragment(
+                UserWithTokens (
+                    args.userData.user,
+                    args.userData.accessToken,
+                    args.userData.refreshToken
+                )
+            )
+            closeSearchView()
+            navController.navigate(direction)
         }
     }
     private fun navigationBack() {

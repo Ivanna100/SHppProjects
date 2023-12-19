@@ -19,7 +19,7 @@ class ContactsRepositoryImpl @Inject constructor(
 
     override suspend fun getAllUsers(accessToken: String, user : UserData): ArrayDataApiResultState {
         return try {
-            val response = service.getAllUsers("$AUTHORIZATION_PREFIX$accessToken")
+            val response = service.getAllUsers("$AUTHORIZATION_PREFIX $accessToken")
             val contacts = UserDataHolder.getContacts()
             val filteredUsers = response.data.users?.filter {
                 it.name != null && it.email != user.email && !contacts.contains(it.toContact())
@@ -42,7 +42,7 @@ class ContactsRepositoryImpl @Inject constructor(
         states.add(Pair(contact.id, ArrayDataApiResultState.Loading))
         return try {
             val response =
-                service.addContact(userId, "${AUTHORIZATION_PREFIX}$accessToken", contact.id)
+                service.addContact(userId, "$AUTHORIZATION_PREFIX $accessToken", contact.id)
             states[states.size-1] =
                 Pair(contact.id, ArrayDataApiResultState.Success(response.data.contacts))
             UserDataHolder.setStates(states[states.size - 1])
@@ -59,7 +59,7 @@ class ContactsRepositoryImpl @Inject constructor(
     ): ArrayDataApiResultState {
         return try {
             val response = service.deleteContact(
-                userId, contactId,"${AUTHORIZATION_PREFIX}$accessToken"
+                userId, contactId,"$AUTHORIZATION_PREFIX $accessToken"
 
             )
             response.data.let { ArrayDataApiResultState.Success(it.contacts) }
@@ -70,7 +70,7 @@ class ContactsRepositoryImpl @Inject constructor(
 
     override suspend fun getUserContacts(userId: Long, accessToken: String): ArrayDataApiResultState {
         return try {
-            val response = service.getUserContacts(userId, "${AUTHORIZATION_PREFIX}$accessToken")
+            val response = service.getUserContacts(userId, "$AUTHORIZATION_PREFIX $accessToken")
             UserDataHolder.setContactList((response.data.contacts?.map { it.toContact() }
                 ?: emptyList()) as ArrayList<Contact>)
             response.data.let { ArrayDataApiResultState.Success(it.contacts) }

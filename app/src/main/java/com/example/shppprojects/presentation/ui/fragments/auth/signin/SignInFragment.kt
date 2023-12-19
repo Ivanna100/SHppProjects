@@ -12,7 +12,6 @@ import com.example.shppprojects.domain.state.UserApiResultState
 import com.example.shppprojects.presentation.ui.fragments.BaseFragment
 import com.example.shppprojects.utils.DataStore.saveData
 import com.example.shppprojects.utils.ext.gone
-import com.example.shppprojects.utils.ext.invisible
 import com.example.shppprojects.utils.ext.log
 import com.example.shppprojects.utils.ext.showErrorSnackBar
 import com.example.shppprojects.utils.ext.visible
@@ -73,9 +72,9 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>(FragmentSignInBinding
                         }
                         val direction = SignInFragmentDirections.actionSignInFragmentToViewPagerFragment(
                             UserWithTokens(
-                                it.data.user,
-                                it.data.accessToken,
-                                it.data.refreshToken
+                                it.userData.user,
+                                it.userData.accessToken,
+                                it.userData.refreshToken
                             )
                         )
                         log("navigate sign In to View Pager")

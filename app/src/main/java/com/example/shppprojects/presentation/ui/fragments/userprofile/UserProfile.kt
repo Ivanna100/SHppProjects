@@ -15,7 +15,7 @@ import com.example.shppprojects.presentation.ui.fragments.viewpager.ViewPagerFra
 import com.example.shppprojects.presentation.ui.fragments.viewpager.ViewPagerFragmentDirections
 import com.example.shppprojects.utils.Constants
 import com.example.shppprojects.utils.DataStore
-import com.example.shppprojects.utils.ext.invisible
+import com.example.shppprojects.utils.ext.gone
 import com.example.shppprojects.utils.ext.showErrorSnackBar
 import com.example.shppprojects.utils.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,9 +23,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class UserProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate){
+class UserProfile : BaseFragment<FragmentProfileBinding>(FragmentProfileBinding::inflate){
 
-    private val args: UserProfileFragmentArgs by navArgs()
+    private val args: UserProfileArgs by navArgs()
     private val viewModel : UserProfileViewModel by viewModels()
     private lateinit var user : UserData
 
@@ -38,8 +38,8 @@ class UserProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfile
     }
 
     private fun initialUser() {
-        viewModel.getUser(args.userProfile.user.id, args.userProfile.accessToken)
-        user = args.userProfile.user
+        viewModel.getUser(args.userData.user.id, args.userData.accessToken)
+        user = args.userData.user
     }
 
     private fun setListeners() {
@@ -71,8 +71,8 @@ class UserProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfile
             val direction = ViewPagerFragmentDirections.actionViewPagerFragmentToEditProfileFragment(
                 UserWithTokens(
                     user,
-                    args.userProfile.accessToken,
-                    args.userProfile.refreshToken
+                    args.userData.accessToken,
+                    args.userData.refreshToken
                 )
             )
             navController.navigate(direction)
@@ -95,9 +95,9 @@ class UserProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfile
                         with(binding) {
                             textViewCareer.visible()
                             textViewHomeAddress.visible()
-                            progressBar.invisible()
+                            progressBar.gone()
                         }
-                        user = it.data.user
+                        user = it.userData.user
                         setUserProfile()
                     }
 

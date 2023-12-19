@@ -21,6 +21,7 @@ import com.example.shppprojects.utils.DataStore.saveData
 import com.example.shppprojects.utils.Validation
 import com.example.shppprojects.utils.ext.invisible
 import com.example.shppprojects.utils.ext.loadImage
+import com.example.shppprojects.utils.ext.log
 import com.example.shppprojects.utils.ext.showErrorSnackBar
 import com.example.shppprojects.utils.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
@@ -71,6 +72,7 @@ class SignUpExtendedFragment : BaseFragment<SignUpExtendedBinding>(SignUpExtende
                 } else if(!Validation.isValidMobilePhone(textInputEditTextMobilePhoneSue.text.toString())) {
                     root.showErrorSnackBar(requireContext(), R.string.phone_must_be_at_least_10_digits_long)
                 } else {
+                    log("user name extended register: " + textInputEditTextUserNameSue.text.toString())
                     viewModel.registerUser(
                         UserRequest(
                             args.email,
@@ -79,6 +81,7 @@ class SignUpExtendedFragment : BaseFragment<SignUpExtendedBinding>(SignUpExtende
                             textInputEditTextMobilePhoneSue.text.toString()
                         )
                     )
+
                 }
             }
         }
@@ -105,7 +108,9 @@ class SignUpExtendedFragment : BaseFragment<SignUpExtendedBinding>(SignUpExtende
         val elements = email.split("@")[0].replace(".", " ").split(" ")
         return if(elements.size >= 2) {
             "${elements[0].replaceFirstChar { it.uppercase() }} ${elements[1].replaceFirstChar { it.titlecase() }}"
-        } else elements[0]
+        } else {
+            elements[0]
+        }
     }
 
     private fun setObservers() {
@@ -117,11 +122,12 @@ class SignUpExtendedFragment : BaseFragment<SignUpExtendedBinding>(SignUpExtende
                         viewModel.isLogout()
                         val direction = SignUpExtendedFragmentDirections.actionSignUpExtendedFragmentToViewPagerFragment(
                             UserWithTokens(
-                                it.data.user,
-                                it.data.accessToken,
-                                it.data.refreshToken
+                                it.userData.user,
+                                it.userData.accessToken,
+                                it.userData.refreshToken
                             )
                         )
+                        log("user after register on sign up extended fragment" + it.userData.user.toString())
                         navController.navigate(direction)
                     }
 

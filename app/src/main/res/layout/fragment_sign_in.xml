@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background">
@@ -133,6 +132,7 @@
         android:fontFamily="@font/example6"
         android:text="@string/login"
         android:textSize="@dimen/text_normal_size"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toTopOf="@id/text_view_do_not_have_account_sign_in"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

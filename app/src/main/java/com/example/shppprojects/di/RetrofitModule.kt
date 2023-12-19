@@ -19,12 +19,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 class RetrofitModule {
 
-//    @Singleton
-//    @Provides
-//    fun providesHttpLoggingInterceptor() : HttpLoggingInterceptor =
-//        HttpLoggingInterceptor
-//            .setLevel(HttpLoggingInterceptor.Level.BODY)).build()
-
     @Singleton
     @Provides
     fun providesMyResponseInterceptor(): MyResponseInterceptor = MyResponseInterceptor()
@@ -32,7 +26,6 @@ class RetrofitModule {
     @Singleton
     @Provides
     fun providesOkHttpClient(
-//        myResponseInterceptor: MyResponseInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(HttpLoggingInterceptor()
@@ -60,21 +53,6 @@ class RetrofitModule {
             .addConverterFactory(convertorFactory)
             .build()
     }
-
-//    @Provides
-//    @Singleton
-//    fun providesRetrofit() : Retrofit =
-//        Retrofit.Builder()
-//            .client(
-//                OkHttpClient.Builder()
-//                    .addInterceptor(
-////                        HttpLoggingInterceptor()
-////                            .setLevel(HttpLoggingInterceptor.Level.BODY)).build()
-//            )
-//            .baseUrl(BASE_URL)
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-
 
     @Provides
     @Singleton

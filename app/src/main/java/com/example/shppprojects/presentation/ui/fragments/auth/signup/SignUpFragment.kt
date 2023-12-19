@@ -6,6 +6,7 @@ import androidx.core.widget.doOnTextChanged
 import com.example.shppprojects.databinding.FragmentSignUpBinding
 import com.example.shppprojects.presentation.ui.fragments.BaseFragment
 import com.example.shppprojects.utils.Validation
+import com.example.shppprojects.utils.ext.log
 import com.example.shppprojects.utils.ext.visibleIf
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -28,6 +29,7 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(FragmentSignUpBinding
             buttonRegister.setOnClickListener {
                 if(Validation.isValidEmail(textInputEditTextEmail.text.toString()) &&
                     Validation.isValidPassword(textInputEditTextPassword.text.toString())) {
+                    log("btn register ok navigate")
                     val direction = SignUpFragmentDirections.actionSignUpFragmentToSignUpExtendedFragment(
                         textInputEditTextEmail.text.toString(),
                         textInputEditTextPassword.text.toString(),

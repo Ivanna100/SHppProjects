@@ -48,9 +48,9 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
                     is UserApiResultState.Success -> {
                         val direction = SplashFragmentDirections.actionSplashFragmentToViewPagerFragment(
                             UserWithTokens(
-                                it.data.user,
-                                it.data.accessToken,
-                                it.data.refreshToken
+                                it.userData.user,
+                                it.userData.accessToken,
+                                it.userData.refreshToken
                             )
                         )
                         navController.navigate(direction)
