@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_view_sign_up_photo_sue"
+        android:layout_width="@dimen/photo_size"
+        android:layout_height="@dimen/photo_size"
+        android:src="@drawable/bc_photo"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.1" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_view_sign_up_mockup_sue"
+        android:layout_width="@dimen/mockup_size"
+        android:layout_height="@dimen/mockup_size"
+        android:src="@drawable/baseline_person_24"
+        app:layout_constraintBottom_toBottomOf="@id/image_view_sign_up_photo_sue"
+        app:layout_constraintEnd_toEndOf="@id/image_view_sign_up_photo_sue"
+        app:layout_constraintStart_toStartOf="@id/image_view_sign_up_photo_sue"
+        app:layout_constraintTop_toTopOf="@id/image_view_sign_up_photo_sue" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/image_view_add_photo_sue"
+        android:layout_width="@dimen/add_photo_size"
+        android:layout_height="@dimen/add_photo_size"
+        android:layout_marginStart="@dimen/normal_margin"
+        android:src="@drawable/ic_add_photo"
+        app:layout_constraintBottom_toBottomOf="@id/image_view_sign_up_photo_sue"
+        app:layout_constraintStart_toEndOf="@id/image_view_sign_up_photo_sue"
+        app:layout_constraintTop_toTopOf="@id/image_view_sign_up_photo_sue" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_view_your_profile_data_sue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/normal_margin"
+        android:fontFamily="@font/example9"
+        android:text="@string/your_profile_data"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_largest_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_view_sign_up_photo_sue" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_view_fill_out_sue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_default"
+        android:fontFamily="@font/example6"
+        android:text="@string/fill_out_the_profile"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_normal_size"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_view_your_profile_data_sue" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_view_user_name_sue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_default"
+        android:layout_marginTop="@dimen/largest_margin"
+        android:text="@string/user_name"
+        android:textColor="@color/gray"
+        app:layout_constraintStart_toStartOf="@id/text_input_user_name_sue"
+        app:layout_constraintTop_toBottomOf="@id/text_view_fill_out_sue" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_user_name_sue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/normal_margin"
+        app:boxBackgroundMode="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_view_user_name_sue">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_input_edit_text_user_name_sue"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edit_text_height"
+            android:maxLength="25"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_big_size" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/text_view_mobile_phone_sue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/margin_default"
+        android:layout_marginTop="@dimen/margin_default"
+        android:text="@string/mobile_phone"
+        android:textColor="@color/gray"
+        app:layout_constraintStart_toStartOf="@id/text_input_user_name_sue"
+        app:layout_constraintTop_toBottomOf="@id/text_input_user_name_sue" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/text_input_mobile_phone_sue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/normal_margin"
+        app:boxBackgroundMode="none"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/text_view_mobile_phone_sue">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/text_input_edit_text_mobile_phone_sue"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/edit_text_height"
+            android:inputType="number"
+            android:maxLength="15"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_normal_size" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_cancel_sue"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/normal_margin"
+        android:layout_marginBottom="@dimen/normal_margin"
+        android:background="@drawable/bc_cancel"
+        android:text="@string/button_cancel"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_normal_size"
+        app:layout_constraintBottom_toTopOf="@id/button_forward_sue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/button_forward_sue"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/button_forward_height"
+        android:layout_marginHorizontal="@dimen/normal_margin"
+        android:layout_marginBottom="@dimen/normal_margin"
+        android:background="@drawable/bc_view_my_contacts"
+        android:letterSpacing="0.1"
+        android:text="@string/forward"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_big_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar_sue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
