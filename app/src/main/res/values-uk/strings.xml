@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">RecyclerView</string>
+    <string name="app_name">Завдання 5</string>
     <string name="full_name">Повне ім\'я</string>
     <string name="profession">Професія</string>
     <string name="career">Кар\'єра</string>
