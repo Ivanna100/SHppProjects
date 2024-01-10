@@ -13,7 +13,7 @@ import com.example.shppprojects.data.model.Contact
 import com.example.shppprojects.data.model.UserWithTokens
 import com.example.shppprojects.databinding.FragmentUsersBinding
 import com.example.shppprojects.domain.state.ArrayDataApiResultState
-import com.example.shppprojects.presentation.ui.fragments.BaseFragment
+import com.example.shppprojects.presentation.ui.base.BaseFragment
 import com.example.shppprojects.presentation.ui.fragments.addcontacts.adapter.AddContactsAdapter
 import com.example.shppprojects.presentation.ui.fragments.addcontacts.adapter.interfaces.UserItemClickListener
 import com.example.shppprojects.utils.ext.invisible
@@ -48,7 +48,7 @@ class AddContactsFragment : BaseFragment<FragmentUsersBinding>(FragmentUsersBind
                             args.userData.refreshToken
                         ), contact
                 )
-                closeSearchView()
+//                closeSearchView()
                 navController.navigate(direction, extras)
             }
         })
@@ -103,47 +103,50 @@ class AddContactsFragment : BaseFragment<FragmentUsersBinding>(FragmentUsersBind
     }
 
     private fun setListeners() {
-        navigateBack()
-        searchView()
+        with(binding) {
+            textViewUsers.setOnClickListener { searchView() }
+            imageSearchView.setOnClickListener { searchView() }
+            imageViewNavigationBack.setOnClickListener { navigateBack() }
+        }
+
     }
 
     private fun navigateBack() {
-        binding.imageViewNavigationBack.setOnClickListener {
             navController.navigateUp()
-        }
     }
 
     private fun searchView() {
-        with(binding) {
-            imageSearchView.setOnCloseListener {
-                imageSearchView.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                textViewUsers.visible()
-                imageViewNavigationBack.visible()
-                false
-            }
-            imageSearchView.setOnSearchClickListener {
-                imageSearchView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                textViewUsers.invisible()
-                imageViewNavigationBack.invisible()
-            }
-            imageSearchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    return false
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    textViewNoResultFound.visibleIf(viewModel.updateContactList(newText) == 0)
-                    if(newText.isNullOrEmpty()) initialRecyclerView()
-                    return false
-                }
-            } )
-        }
+        viewModel.showNotification(requireContext())
+//        with(binding) {
+//            imageSearchView.setOnCloseListener {
+//                imageSearchView.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+//                textViewUsers.visible()
+//                imageViewNavigationBack.visible()
+//                false
+//            }
+//            imageSearchView.setOnSearchClickListener {
+//                imageSearchView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+//                textViewUsers.invisible()
+//                imageViewNavigationBack.invisible()
+//            }
+//            imageSearchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
+//                override fun onQueryTextSubmit(query: String?): Boolean {
+//                    return false
+//                }
+//
+//                override fun onQueryTextChange(newText: String?): Boolean {
+//                    textViewNoResultFound.visibleIf(viewModel.updateContactList(newText) == 0)
+//                    if(newText.isNullOrEmpty()) initialRecyclerView()
+//                    return false
+//                }
+//            } )
+//        }
     }
 
     private fun closeSearchView() {
-        with(binding) {
-            imageSearchView.setQuery("", false)
-            imageSearchView.isIconified= true
-        }
+//        with(binding) {
+//            imageSearchView.setQuery("", false)
+//            imageSearchView.isIconified= true
+//        }
     }
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Task_5</string>
+    <string name="app_name">Task_6</string>
     <string name="full_name">Full Name</string>
     <string name="profession">Profession</string>
     <string name="career">Career</string>
@@ -96,4 +96,8 @@
     <string name="message">Message</string>
     <string name="profile">Profile</string>
     <string name="add_to_my_contacts">Add to my contacts</string>
+    <!-- search fragment -->
+    <string name="search">Search</string>
+    <!-- notifications -->
+    <string name="notification_button">Search</string>
 </resources>

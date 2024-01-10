@@ -8,7 +8,7 @@ import androidx.lifecycle.lifecycleScope
 import com.example.shppprojects.data.model.UserWithTokens
 import com.example.shppprojects.databinding.FragmentSplashBinding
 import com.example.shppprojects.domain.state.UserApiResultState
-import com.example.shppprojects.presentation.ui.fragments.BaseFragment
+import com.example.shppprojects.presentation.ui.base.BaseFragment
 import com.example.shppprojects.utils.Constants
 import com.example.shppprojects.utils.DataStore
 import com.example.shppprojects.utils.ext.showErrorSnackBar

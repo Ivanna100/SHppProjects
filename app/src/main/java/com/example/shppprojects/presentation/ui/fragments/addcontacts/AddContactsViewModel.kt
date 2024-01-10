@@ -1,5 +1,11 @@
 package com.example.shppprojects.presentation.ui.fragments.addcontacts
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shppprojects.R
@@ -8,6 +14,7 @@ import com.example.shppprojects.data.model.Contact
 import com.example.shppprojects.data.model.UserData
 import com.example.shppprojects.domain.repository.ContactsRepository
 import com.example.shppprojects.domain.state.ArrayDataApiResultState
+import com.example.shppprojects.utils.ext.log
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +25,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddContactsViewModel @Inject constructor(
-    private val contactsRepository : ContactsRepository
+    private val contactsRepository : ContactsRepository,
+    private val notificationBuilder: NotificationCompat.Builder,
+    private val notificationManager: NotificationManagerCompat
 ) : ViewModel() {
 
     private val _usersStateFlow = MutableStateFlow<ArrayDataApiResultState>(ArrayDataApiResultState.Initial)
@@ -65,4 +74,14 @@ class AddContactsViewModel @Inject constructor(
         return filteredList.size
     }
 
+    fun showNotification(context: Context) {
+        log("showNotification entered")
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+            log("notify might be ok")
+            notificationManager.notify(1, notificationBuilder.build())
+        }
+
+    }
 }

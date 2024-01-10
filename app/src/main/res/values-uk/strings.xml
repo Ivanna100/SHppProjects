@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Завдання 5</string>
+    <string name="app_name">Завдання 6</string>
     <string name="full_name">Повне ім\'я</string>
     <string name="profession">Професія</string>
     <string name="career">Кар\'єра</string>
@@ -83,4 +83,8 @@
     <string name="profile">Профіль</string>
     <string name="message">Повідомлення</string>
     <string name="add_to_my_contacts">Додати до моїх контактів</string>
+    <!-- search fragment -->
+    <string name="search">Пошук</string>
+    <!-- notifications -->
+    <string name="notification_button">ПОШУК КОНТАКТІВ</string>
 </resources>

@@ -10,7 +10,7 @@ import com.example.shppprojects.R
 import com.example.shppprojects.data.model.Contact
 import com.example.shppprojects.databinding.FragmentDetailViewBinding
 import com.example.shppprojects.domain.state.ArrayDataApiResultState
-import com.example.shppprojects.presentation.ui.fragments.BaseFragment
+import com.example.shppprojects.presentation.ui.base.BaseFragment
 import com.example.shppprojects.utils.Constants
 import com.example.shppprojects.utils.ext.gone
 import com.example.shppprojects.utils.ext.loadImage
@@ -20,7 +20,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ContactProfileFragment : BaseFragment<FragmentDetailViewBinding> (
+class ContactProfileFragment : BaseFragment<FragmentDetailViewBinding>(
     FragmentDetailViewBinding:: inflate
 ){
     private val args: ContactProfileFragmentArgs by navArgs()

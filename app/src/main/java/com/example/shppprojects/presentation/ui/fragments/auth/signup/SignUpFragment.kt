@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.widget.doOnTextChanged
 import com.example.shppprojects.databinding.FragmentSignUpBinding
-import com.example.shppprojects.presentation.ui.fragments.BaseFragment
+import com.example.shppprojects.presentation.ui.base.BaseFragment
 import com.example.shppprojects.utils.Validation
 import com.example.shppprojects.utils.ext.log
 import com.example.shppprojects.utils.ext.visibleIf

@@ -9,7 +9,7 @@ import com.example.shppprojects.data.model.UserRequest
 import com.example.shppprojects.data.model.UserWithTokens
 import com.example.shppprojects.databinding.FragmentSignInBinding
 import com.example.shppprojects.domain.state.UserApiResultState
-import com.example.shppprojects.presentation.ui.fragments.BaseFragment
+import com.example.shppprojects.presentation.ui.base.BaseFragment
 import com.example.shppprojects.utils.DataStore.saveData
 import com.example.shppprojects.utils.ext.gone
 import com.example.shppprojects.utils.ext.log

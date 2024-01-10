@@ -11,90 +11,69 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:background="@color/background"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/guidelineBackground"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/guidelineBackground"/>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineBackground"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="146dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageViewNavigationBack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_middle"
+        android:layout_marginStart="@dimen/normal_margin"
         android:background="@color/background"
         android:src="@drawable/ic_navigation_back"
+        app:layout_constraintBottom_toBottomOf="@id/textViewContacts"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/textViewContacts"
-        app:layout_constraintBottom_toBottomOf="@id/textViewContacts"/>
+        app:layout_constraintTop_toTopOf="@id/textViewContacts" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textViewContacts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_default"
-        android:fontFamily="@font/example6"
-        android:text="@string/contacts"
+        android:layout_marginTop="@dimen/small_margin"
+        android:fontFamily="@font/noto_sans"
+        android:text="@string/search"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_header_size"
-        app:layout_constraintStart_toStartOf="parent"
+        android:textSize="@dimen/text_large_size"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <SearchView
         android:id="@+id/imageSearchView"
+        style="@style/searchViewTheme"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/searchViewStyle"
         android:queryBackground="@drawable/bc_edit_text_search"
         app:layout_constraintBottom_toBottomOf="@id/textViewContacts"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/textViewContacts" />
 
-    <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/textViewAddContacts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/margin_middle"
-        android:fontFamily="@font/example5"
-        android:text="@string/add_contacts"
-        android:textColor="@color/white"
-        android:textSize="@dimen/text_button_size"
-        app:layout_constraintTop_toBottomOf="@id/imageViewNavigationBack"
-        app:layout_constraintBottom_toBottomOf="@id/guidelineBackground"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintVertical_bias="0.75" />
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewContacts"
+        android:id="@+id/recycler_view_contacts"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="@dimen/margin_middle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/guidelineBackground"
+        android:layout_marginBottom="@dimen/normal_margin"
         app:layout_constraintBottom_toTopOf="@id/imageViewDeleteSelectMode"
-        tools:listitem="@layout/item_user"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/guidelineBackground"
+        tools:listitem="@layout/item_user" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageViewDeleteSelectMode"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/large_margin"
+        android:layout_marginBottom="@dimen/largest_margin"
         android:src="@drawable/ic_bin_select_mode"
-        android:layout_marginEnd="@dimen/margin_big"
-        android:layout_marginBottom="@dimen/margin_delete_mode"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@id/recyclerViewContacts"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/recycler_view_contacts" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -112,7 +91,7 @@
         android:id="@+id/textViewNoResultFound"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/example9"
+        android:fontFamily="@font/noto_sans"
         android:text="@string/no_results_found"
         android:textColor="@color/black"
         android:textSize="@dimen/text_large_size"
@@ -127,13 +106,19 @@
         android:id="@+id/textViewMoreContacts"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/example9"
+        android:fontFamily="@font/noto_sans"
+        android:gravity="center"
         android:text="@string/you_can_see_more_contacts_in_the_recommendation"
         android:textColor="@color/black"
-        android:gravity="center"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewNoResultFound" />
 
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guidelineBackground"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -38,4 +38,9 @@ object Constants {
 
     // error message
     const val OPERATION_ERROR = "Operation error!"
+
+    // notification button
+    const val NOTIFICATION_ACTION = "search contacts"
+    const val CHANNEL_ID = "channel id"
+    const val CHANNEL_NAME = "channel name"
 }

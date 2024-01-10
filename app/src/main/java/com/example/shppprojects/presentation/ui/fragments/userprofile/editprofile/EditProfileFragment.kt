@@ -11,7 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.example.shppprojects.databinding.FragmentEditProfileBinding
 import com.example.shppprojects.domain.state.UserApiResultState
-import com.example.shppprojects.presentation.ui.fragments.BaseFragment
+import com.example.shppprojects.presentation.ui.base.BaseFragment
 import com.example.shppprojects.presentation.ui.fragments.userprofile.editprofile.dialog.DialogCalendar
 import com.example.shppprojects.presentation.ui.fragments.userprofile.editprofile.interfaces.DialogCalendarListener
 import com.example.shppprojects.utils.Constants

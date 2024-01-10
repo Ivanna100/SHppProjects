@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.navigation.fragment.navArgs
 import com.example.shppprojects.databinding.FragmentViewPagerBinding
-import com.example.shppprojects.presentation.ui.fragments.BaseFragment
+import com.example.shppprojects.presentation.ui.base.BaseFragment
 import com.example.shppprojects.presentation.ui.fragments.viewpager.adapter.ViewPagerAdapter
 import com.example.shppprojects.utils.Constants
 import com.google.android.material.tabs.TabLayoutMediator

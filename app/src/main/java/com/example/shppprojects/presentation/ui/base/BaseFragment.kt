@@ -1,4 +1,4 @@
-package com.example.shppprojects.presentation.ui.fragments
+package com.example.shppprojects.presentation.ui.base
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

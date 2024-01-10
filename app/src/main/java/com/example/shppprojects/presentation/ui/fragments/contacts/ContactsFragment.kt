@@ -17,7 +17,7 @@ import com.example.shppprojects.data.model.Contact
 import com.example.shppprojects.data.model.UserWithTokens
 import com.example.shppprojects.databinding.FragmentContactsBinding
 import com.example.shppprojects.domain.state.ArrayDataApiResultState
-import com.example.shppprojects.presentation.ui.fragments.BaseFragment
+import com.example.shppprojects.presentation.ui.base.BaseFragment
 import com.example.shppprojects.presentation.ui.fragments.contacts.adapter.RecyclerViewAdapter
 import com.example.shppprojects.presentation.ui.fragments.contacts.adapter.interfaces.ContactItemClickListener
 import com.example.shppprojects.presentation.ui.fragments.viewpager.ViewPagerFragment

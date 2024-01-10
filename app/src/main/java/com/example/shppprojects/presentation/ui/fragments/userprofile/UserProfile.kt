@@ -10,7 +10,7 @@ import com.example.shppprojects.data.model.UserData
 import com.example.shppprojects.data.model.UserWithTokens
 import com.example.shppprojects.databinding.FragmentProfileBinding
 import com.example.shppprojects.domain.state.UserApiResultState
-import com.example.shppprojects.presentation.ui.fragments.BaseFragment
+import com.example.shppprojects.presentation.ui.base.BaseFragment
 import com.example.shppprojects.presentation.ui.fragments.viewpager.ViewPagerFragment
 import com.example.shppprojects.presentation.ui.fragments.viewpager.ViewPagerFragmentDirections
 import com.example.shppprojects.utils.Constants
