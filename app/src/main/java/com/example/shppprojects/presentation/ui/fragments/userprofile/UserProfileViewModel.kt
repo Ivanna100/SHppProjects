@@ -1,26 +1,27 @@
 package com.example.shppprojects.presentation.ui.fragments.userprofile
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.shppprojects.data.repository.AccountRepositoryImpl
-import com.example.shppprojects.domain.state.UserApiResultState
+import com.example.shppprojects.data.model.ResponseOfUser
+import com.example.shppprojects.data.userdataholder.UserDataHolder
+import com.example.shppprojects.presentation.utils.Constants
+import com.example.shppprojects.presentation.utils.DataStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class UserProfileViewModel @Inject constructor(private val accountReposImpl : AccountRepositoryImpl)
-    : ViewModel() {
+class UserProfileViewModel @Inject constructor() :
+    ViewModel() {
 
-    private val _getUserStateFlow = MutableStateFlow<UserApiResultState> (UserApiResultState.Initial)
-    val getUserState : StateFlow<UserApiResultState> = _getUserStateFlow
+    fun getUser(): ResponseOfUser.Data = UserDataHolder.userData
 
-    fun getUser(userId : Long, accessToken : String) = viewModelScope.launch(Dispatchers.IO) {
-        _getUserStateFlow.value = UserApiResultState.Loading
-        _getUserStateFlow.value = accountReposImpl.getUser(userId, accessToken)
+    fun removeDataFromDataStore(context: Context) = viewModelScope.launch(Dispatchers.IO) {
+        DataStore.deleteDataFromDataStore(context, Constants.KEY_EMAIL)
+        DataStore.deleteDataFromDataStore(context, Constants.KEY_PASSWORD)
+        DataStore.deleteDataFromDataStore(context, Constants.KEY_REMEMBER_ME)
     }
 
 }

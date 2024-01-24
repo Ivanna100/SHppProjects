@@ -1,16 +1,13 @@
 package com.example.shppprojects.presentation.ui.fragments.search.adapter
 
-import android.os.Parcel
-import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.shppprojects.data.model.Contact
 import com.example.shppprojects.databinding.ItemUserBinding
 import com.example.shppprojects.presentation.ui.fragments.contacts.adapter.utils.ContactDiffUtil
-import com.example.shppprojects.utils.ext.gone
-import com.example.shppprojects.utils.ext.loadImage
+import com.example.shppprojects.presentation.utils.ext.gone
+import com.example.shppprojects.presentation.utils.ext.loadImage
 
 class SearchAdapter() :
     androidx.recyclerview.widget.ListAdapter<Contact, SearchAdapter.UsersViewHolder>(ContactDiffUtil()) {
@@ -24,16 +21,16 @@ class SearchAdapter() :
         holder.bind(currentList[position])
     }
 
-    inner class UsersViewHolder(private val binding: ItemUserBinding):
-            RecyclerView.ViewHolder(binding.root) {
-                fun bind(contact: Contact) {
-                    with(binding){
-                        textViewName.text = contact.name
-                        textViewCareer.text = contact.career
-                        imageViewUserPhoto.loadImage(contact.photo)
-                        imageViewDelete.gone()
-                    }
-                }
+    inner class UsersViewHolder(private val binding: ItemUserBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+        fun bind(contact: Contact) {
+            with(binding) {
+                textViewName.text = contact.name
+                textViewCareer.text = contact.career
+                imageViewUserPhoto.loadImage(contact.photo)
+                imageViewDelete.gone()
             }
+        }
+    }
 
 }

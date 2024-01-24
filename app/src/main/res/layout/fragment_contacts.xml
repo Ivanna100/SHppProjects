@@ -47,16 +47,17 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <SearchView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageSearchView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="@style/searchViewStyle"
+        android:layout_width="18dp"
+        android:layout_height="13dp"
+        android:layout_marginEnd="@dimen/normal_margin"
         android:queryBackground="@drawable/bc_edit_text_search"
+        android:src="@drawable/ic_find_scope"
         app:layout_constraintBottom_toBottomOf="@id/textViewContacts"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toEndOf="@id/textViewContacts"
         app:layout_constraintTop_toTopOf="@id/textViewContacts" />
 
     <androidx.appcompat.widget.AppCompatTextView

@@ -87,6 +87,8 @@
     <string name="contact_not_found">Contact not found</string>
     <string name="invalid_email">Invalid email</string>
     <string name="invalid_password">Invalid password</string>
+    <string name="error_occurred">An error occurred</string>
+    <string name="no_internet_connection">No internet connection</string>
     <!-- fragment users -->
     <string name="add">Add</string>
     <string name="users">Users</string>
@@ -98,6 +100,8 @@
     <string name="add_to_my_contacts">Add to my contacts</string>
     <!-- search fragment -->
     <string name="search">Search</string>
+    <string name="repeat">Repeat</string>
     <!-- notifications -->
     <string name="notification_button">Search</string>
+    <string name="notification_message">Tab to search contacts</string>
 </resources>

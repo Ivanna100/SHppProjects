@@ -2,7 +2,6 @@ package com.example.shppprojects.presentation.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import com.example.shppprojects.R
 import com.example.shppprojects.databinding.ActivityMainBinding
@@ -23,12 +22,10 @@ class MainActivity : BaseActivity<ActivityMainBinding>(ActivityMainBinding::infl
     }
 
     private fun handleDeepLink(intent: Intent?) {
-        if(intent?.data != null) {
-            if (intent?.data != null) {
-                val navController =
-                    (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
-                navController.navigate(R.id.searchFragment)
-            }
+        if (intent?.data != null) {
+            val navController =
+                (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment).navController
+            navController.navigate(R.id.searchFragment)
         }
     }
 }

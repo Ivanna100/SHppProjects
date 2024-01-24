@@ -5,13 +5,12 @@ import android.view.View
 import androidx.core.widget.doOnTextChanged
 import com.example.shppprojects.databinding.FragmentSignUpBinding
 import com.example.shppprojects.presentation.ui.base.BaseFragment
-import com.example.shppprojects.utils.Validation
-import com.example.shppprojects.utils.ext.log
-import com.example.shppprojects.utils.ext.visibleIf
+import com.example.shppprojects.presentation.utils.Validation
+import com.example.shppprojects.presentation.utils.ext.visibleIf
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SignUpFragment : BaseFragment<FragmentSignUpBinding>(FragmentSignUpBinding::inflate){
+class SignUpFragment : BaseFragment<FragmentSignUpBinding>(FragmentSignUpBinding::inflate) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -20,43 +19,47 @@ class SignUpFragment : BaseFragment<FragmentSignUpBinding>(FragmentSignUpBinding
     }
 
     private fun setListeners() {
-        register()
-        signIn()
+        with(binding) {
+            buttonRegister.setOnClickListener { toExtendedScreen() }
+            textViewSignIn.setOnClickListener { toSignInScreen() }
+        }
     }
 
-    private fun register() {
+    private fun toExtendedScreen() {
         with(binding) {
-            buttonRegister.setOnClickListener {
-                if(Validation.isValidEmail(textInputEditTextEmail.text.toString()) &&
-                    Validation.isValidPassword(textInputEditTextPassword.text.toString())) {
-                    log("btn register ok navigate")
-                    val direction = SignUpFragmentDirections.actionSignUpFragmentToSignUpExtendedFragment(
+            if (Validation.isValidEmail(textInputEditTextEmail.text.toString()) &&
+                Validation.isValidPassword(textInputEditTextPassword.text.toString())
+            ) {
+                val direction =
+                    SignUpFragmentDirections.actionSignUpFragmentToSignUpExtendedFragment(
                         textInputEditTextEmail.text.toString(),
                         textInputEditTextPassword.text.toString(),
                         checkboxRemember.isChecked
                     )
-                    navController.navigate(direction)
-                }
+                navController.navigate(direction)
             }
         }
     }
 
-    private fun signIn() {
-        binding.textViewSignUp.setOnClickListener {
-            navController.navigateUp()
-        }
+    private fun toSignInScreen() {
+        navController.navigateUp()
     }
 
     private fun dataValidation() {
         with(binding) {
-            textInputEditTextEmail.doOnTextChanged{ text, _, _, _ ->
-                textViewInvalidEmail.visibleIf(!Validation.isValidEmail(text.toString()) &&
-                        !text.isNullOrEmpty())
+            textInputEditTextEmail.doOnTextChanged { text, _, _, _ ->
+                textViewInvalidEmail.visibleIf(
+                    !Validation.isValidEmail(text.toString()) &&
+                            !text.isNullOrEmpty()
+                )
             }
             textInputEditTextPassword.doOnTextChanged { text, _, _, _ ->
-                textViewInvalidEmail.visibleIf(!Validation.isValidPassword(text.toString()) &&
-                        !text.isNullOrEmpty())
+                textViewInvalidEmail.visibleIf(
+                    !Validation.isValidPassword(text.toString()) &&
+                            !text.isNullOrEmpty()
+                )
             }
         }
     }
+
 }

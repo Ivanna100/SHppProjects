@@ -5,24 +5,19 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.example.shppprojects.data.model.UserRequest
-import com.example.shppprojects.data.model.UserWithTokens
 import com.example.shppprojects.databinding.FragmentSignInBinding
-import com.example.shppprojects.domain.state.UserApiResultState
+import com.example.shppprojects.domain.state.ApiStateUser
 import com.example.shppprojects.presentation.ui.base.BaseFragment
-import com.example.shppprojects.utils.DataStore.saveData
-import com.example.shppprojects.utils.ext.gone
-import com.example.shppprojects.utils.ext.log
-import com.example.shppprojects.utils.ext.showErrorSnackBar
-import com.example.shppprojects.utils.ext.visible
+import com.example.shppprojects.presentation.utils.ext.gone
+import com.example.shppprojects.presentation.utils.ext.showErrorSnackBar
+import com.example.shppprojects.presentation.utils.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignInFragment : BaseFragment<FragmentSignInBinding>(FragmentSignInBinding::inflate) {
 
-    private val viewModel : SignInViewModel by viewModels()
+    private val viewModel: SignInViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -31,67 +26,57 @@ class SignInFragment : BaseFragment<FragmentSignInBinding>(FragmentSignInBinding
     }
 
     private fun setListeners() {
-        logIn()
-        signUp()
-    }
-
-    private fun logIn() {
         with(binding) {
-            buttonLoginSignIn.setOnClickListener{
-                viewModel.authorizationUser(
-                    UserRequest(
-                        textInputEditTextEmailSignIn.text.toString(),
-                        textInputEditTextPasswordSignIn.text.toString()
-                    )
-                )
-            }
+            buttonLoginSignIn.setOnClickListener { signIn() }
+            textViewSignUp.setOnClickListener { toSignUpScreen() }
         }
     }
 
-    private fun signUp() {
-        binding.textViewSignUpSignIn.setOnClickListener {
-            val direction = SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
-            navController.navigate(direction)
+    private fun signIn() {
+        with(binding) {
+            viewModel.authorizationUser(
+                textInputEditTextEmailSignIn.text.toString(),
+                textInputEditTextPasswordSignIn.text.toString()
+            )
         }
+    }
+
+    private fun toSignUpScreen() {
+        val direction = SignInFragmentDirections.actionSignInFragmentToSignUpFragment()
+        navController.navigate(direction)
     }
 
     private fun setObserver() {
-        lifecycleScope.launch {
-            viewModel.authorizationState.flowWithLifecycle(viewLifecycleOwner.lifecycle).collect{
-                when(it) {
-                    is UserApiResultState.Success -> {
-                        log("login success")
-                        if(binding.checkboxRememberMeSignIn.isChecked) {
-                            lifecycleScope.launch(Dispatchers.IO) {
-                                saveData(
-                                    requireContext(),
-                                    binding.textInputEditTextEmailSignIn.text.toString(),
-                                    binding.textInputEditTextPasswordSignIn.text.toString()
-                                )
+        with(binding) {
+            lifecycleScope.launch {
+                viewModel.authorizationState.flowWithLifecycle(viewLifecycleOwner.lifecycle)
+                    .collect {
+                        when (it) {
+                            is ApiStateUser.Success<*> -> {
+                                if (checkboxRememberMeSignIn.isChecked) {
+                                    viewModel.saveDataToDataStore(
+                                            requireContext(),
+                                            textInputEditTextEmailSignIn.text.toString(),
+                                            textInputEditTextPasswordSignIn.text.toString()
+                                        )
+                                }
+                                val direction =
+                                    SignInFragmentDirections.actionSignInFragmentToViewPagerFragment()
+                                navController.navigate(direction)
+                            }
+
+                            is ApiStateUser.Initial -> Unit
+
+                            is ApiStateUser.Loading -> {
+                                progressBar.visible()
+                            }
+
+                            is ApiStateUser.Error -> {
+                                progressBar.gone()
+                                root.showErrorSnackBar(requireContext(), it.error)
                             }
                         }
-                        val direction = SignInFragmentDirections.actionSignInFragmentToViewPagerFragment(
-                            UserWithTokens(
-                                it.userData.user,
-                                it.userData.accessToken,
-                                it.userData.refreshToken
-                            )
-                        )
-                        log("navigate sign In to View Pager")
-                        navController.navigate(direction)
                     }
-
-                    is UserApiResultState.Initial -> Unit
-
-                    is UserApiResultState.Loading -> {
-                        binding.progressBar.visible()
-                    }
-
-                    is UserApiResultState.Error -> {
-                        binding.progressBar.gone()
-                        binding.root.showErrorSnackBar(requireContext(), it.error)
-                    }
-                }
             }
         }
     }

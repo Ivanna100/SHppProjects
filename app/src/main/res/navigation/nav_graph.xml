@@ -42,9 +42,6 @@
         android:id="@+id/viewPagerFragment"
         android:name="com.example.shppprojects.presentation.ui.fragments.viewpager.ViewPagerFragment"
         android:label="ViewPagerFragment">
-        <argument
-            android:name="userData"
-            app:argType="com.example.shppprojects.data.model.UserWithTokens" />
         <action
             android:id="@+id/action_viewPagerFragment_to_contactProfile"
             app:destination="@id/contactProfileFragment" />
@@ -85,9 +82,6 @@
             android:name="isNewUser"
             app:argType="boolean" />
         <argument
-            android:name="userData"
-            app:argType="com.example.shppprojects.data.model.UserWithTokens" />
-        <argument
             android:name="Contact"
             app:argType="com.example.shppprojects.data.model.Contact" />
     </fragment>
@@ -96,36 +90,24 @@
         android:name="com.example.shppprojects.presentation.ui.fragments.userprofile.UserProfile"
         android:label="UserProfile"
         tools:layout="@layout/fragment_profile">
-        <argument
-            android:name="userData"
-            app:argType="com.example.shppprojects.data.model.UserWithTokens" />
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
         android:name="com.example.shppprojects.presentation.ui.fragments.userprofile.editprofile.EditProfileFragment"
         android:label="EditProfileFragment"
         tools:layout="@layout/fragment_edit_profile" >
-        <argument
-            android:name="userData"
-            app:argType="com.example.shppprojects.data.model.UserWithTokens" />
     </fragment>
     <fragment
         android:id="@+id/contactsFragment"
         android:name="com.example.shppprojects.presentation.ui.fragments.contacts.ContactsFragment"
         android:label="ContactsFragment"
         tools:layout="@layout/fragment_contacts">
-        <argument
-            android:name="userData"
-            app:argType="com.example.shppprojects.data.model.UserWithTokens" />
     </fragment>
     <fragment
         android:id="@+id/addContactsFragment"
         android:name="com.example.shppprojects.presentation.ui.fragments.addcontacts.AddContactsFragment"
         android:label="AddContactsFragment"
         tools:layout="@layout/fragment_users" >
-        <argument
-            android:name="userData"
-            app:argType="com.example.shppprojects.data.model.UserWithTokens" />
         <action
             android:id="@+id/action_addContactsFragment_to_contactProfileFragment"
             app:destination="@id/contactProfileFragment" />

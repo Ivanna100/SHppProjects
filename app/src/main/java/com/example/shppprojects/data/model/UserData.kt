@@ -19,7 +19,9 @@ data class UserData(
     val linkedin: String? = null,
     val image: String? = null,
     val created_at: String? = null,
-    val updated_at: String? = null
-) : Parcelable { fun toContact(): Contact = Contact(name, career, image, address, id) }
+    val updated_at: String? = null,
+) : Parcelable {
+    fun toContact(): Contact = Contact(name, career, image, address, id)
+}
 
 

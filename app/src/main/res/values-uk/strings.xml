@@ -74,6 +74,8 @@
     <string name="contact_not_found">Контакт не знайдено</string>
     <string name="invalid_email">Недійсна електронна пошта</string>
     <string name="invalid_password">Недійсний пароль</string>
+    <string name="error_occurred">Виникла помилка!</string>
+    <string name="no_internet_connection">Відсутнє інтернет з\'єднання</string>
     <!-- fragment users -->
     <string name="add">Додати</string>
     <string name="users">Користувачі</string>
@@ -85,6 +87,8 @@
     <string name="add_to_my_contacts">Додати до моїх контактів</string>
     <!-- search fragment -->
     <string name="search">Пошук</string>
+    <string name="repeat">Повторна спроба</string>
     <!-- notifications -->
     <string name="notification_button">ПОШУК КОНТАКТІВ</string>
+    <string name="notification_message">Перейти до пошуку</string>
 </resources>
