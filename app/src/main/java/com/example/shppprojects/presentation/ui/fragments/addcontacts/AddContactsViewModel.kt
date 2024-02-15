@@ -1,68 +1,92 @@
 package com.example.shppprojects.presentation.ui.fragments.addcontacts
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.shppprojects.R
-import com.example.shppprojects.data.UserDataHolder
+import com.example.shppprojects.data.userdataholder.UserDataHolder
+import com.example.shppprojects.data.database.DatabaseImpl
 import com.example.shppprojects.data.model.Contact
+import com.example.shppprojects.data.model.ResponseOfUser
 import com.example.shppprojects.data.model.UserData
 import com.example.shppprojects.domain.repository.ContactsRepository
-import com.example.shppprojects.domain.state.ArrayDataApiResultState
+import com.example.shppprojects.domain.state.ApiStateUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class AddContactsViewModel @Inject constructor(
-    private val contactsRepository : ContactsRepository
+    private val contactsRepository: ContactsRepository,
+    private val databaseImpl: DatabaseImpl,
+    private val notificationBuilder: NotificationCompat.Builder,
+    private val notificationManager: NotificationManagerCompat,
 ) : ViewModel() {
 
-    private val _usersStateFlow = MutableStateFlow<ArrayDataApiResultState>(ArrayDataApiResultState.Initial)
-    val usersState : StateFlow<ArrayDataApiResultState> = _usersStateFlow
+    private val _usersStateFlow = MutableStateFlow<ApiStateUser>(ApiStateUser.Initial)
+    val usersState: StateFlow<ApiStateUser> = _usersStateFlow
 
     private val _users = MutableStateFlow<List<Contact>>(listOf())
-    val users : StateFlow<List<Contact>> = _users
+    val users: StateFlow<List<Contact>> = _users
 
-    private val _states : MutableStateFlow<ArrayList<Pair<Long, ArrayDataApiResultState>>> =
+    private val _states: MutableStateFlow<ArrayList<Pair<Long, ApiStateUser>>> =
         MutableStateFlow(ArrayList())
-    val states : StateFlow<ArrayList<Pair<Long, ArrayDataApiResultState>>> = _states
+    val states: StateFlow<ArrayList<Pair<Long, ApiStateUser>>> = _states
 
     // so that it does not always depend on the server
     val supportList: ArrayList<Contact> = arrayListOf()
-    // search helper
-    private var startedListContact: List<Contact> = listOf()
 
-    fun getAllUsers(accessToken : String, user : UserData) = viewModelScope.launch(Dispatchers.IO) {
-        _usersStateFlow.value = ArrayDataApiResultState.Loading
-        _usersStateFlow.value = contactsRepository.getAllUsers(accessToken, user)
-        withContext(Dispatchers.Main) {
-            _users.value = UserDataHolder.getServerList()
-            startedListContact = _users.value
-        }
-    }
-
-    fun addContact(userId : Long, contact: Contact, accessToken: String) =
-        viewModelScope.launch(Dispatchers.IO) {
-            if(!supportList.contains(contact)) {
-                supportList.add(contact)
-                _states.value = arrayListOf(Pair(contact.id, ArrayDataApiResultState.Loading))
-                contactsRepository.addContact(userId, accessToken, contact)
-                _states.value = UserDataHolder.getStates()
+    fun getAllUsers(accessToken: String, user: UserData, hasInternet: Boolean) =
+        viewModelScope.launch(Dispatchers.Main) {
+            _usersStateFlow.value = ApiStateUser.Loading
+            _usersStateFlow.value = if (hasInternet) {
+                contactsRepository.getAllUsers(accessToken, user)
             } else {
-                _usersStateFlow.value = ArrayDataApiResultState.Error(R.string.already_have_this_a_contact)
+                databaseImpl.getAllUsers()
+            }
+            _users.value = UserDataHolder.serverUsers
+            databaseImpl.addUsersToSearchList(_users.value)
+        }
+
+
+    fun addContact(userId: Long, contact: Contact, accessToken: String, hasInternet: Boolean) =
+        viewModelScope.launch(Dispatchers.IO) {
+            if (!supportList.contains(contact)) {
+                supportList.add(contact)
+                _states.value = arrayListOf(Pair(contact.id, ApiStateUser.Loading))
+                if (hasInternet) {
+                    contactsRepository.addContact(userId, accessToken, contact)
+                } else {
+                    _usersStateFlow.value = ApiStateUser.Error(R.string.no_internet_connection)
+                }
+
+                _states.value = UserDataHolder.states
+                databaseImpl.deleteFromSearchList(contact)
             }
         }
 
-    fun updateContactList(newText : String?) : Int {
-        val filteredList = startedListContact.filter { contact: Contact ->
-            contact.name?.contains(newText ?: "", ignoreCase = true) == true
-        }
-        _users.value =filteredList
-        return filteredList.size
+    fun changeState() {
+        _usersStateFlow.value = ApiStateUser.Initial
     }
+
+    fun showNotification(context: Context) {
+        if (ActivityCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            notificationManager.notify(1, notificationBuilder.build())
+        }
+    }
+
+    fun requestGetUser(): ResponseOfUser.Data = UserDataHolder.userData
 
 }

@@ -2,53 +2,55 @@ package com.example.shppprojects.presentation.ui.fragments.addcontacts
 
 import android.os.Bundle
 import android.view.View
-import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.FragmentNavigatorExtras
-import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.shppprojects.data.model.Contact
-import com.example.shppprojects.data.model.UserWithTokens
+import com.example.shppprojects.data.model.ResponseOfUser
 import com.example.shppprojects.databinding.FragmentUsersBinding
-import com.example.shppprojects.domain.state.ArrayDataApiResultState
-import com.example.shppprojects.presentation.ui.fragments.BaseFragment
+import com.example.shppprojects.domain.state.ApiStateUser
+import com.example.shppprojects.presentation.ui.base.BaseFragment
 import com.example.shppprojects.presentation.ui.fragments.addcontacts.adapter.AddContactsAdapter
 import com.example.shppprojects.presentation.ui.fragments.addcontacts.adapter.interfaces.UserItemClickListener
-import com.example.shppprojects.utils.ext.invisible
-import com.example.shppprojects.utils.ext.showErrorSnackBar
-import com.example.shppprojects.utils.ext.visible
-import com.example.shppprojects.utils.ext.visibleIf
+import com.example.shppprojects.presentation.utils.ext.checkForInternet
+import com.example.shppprojects.presentation.utils.ext.invisible
+import com.example.shppprojects.presentation.utils.ext.log
+import com.example.shppprojects.presentation.utils.ext.showErrorSnackBar
+import com.example.shppprojects.presentation.utils.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class AddContactsFragment : BaseFragment<FragmentUsersBinding>(FragmentUsersBinding:: inflate) {
+class AddContactsFragment : BaseFragment<FragmentUsersBinding>(FragmentUsersBinding::inflate) {
 
-    private val args: AddContactsFragmentArgs by navArgs()
     private val viewModel: AddContactsViewModel by viewModels()
-    private  val adapter: AddContactsAdapter by lazy{
-        AddContactsAdapter(listener = object : UserItemClickListener{
+    private val userData: ResponseOfUser.Data by lazy {
+        viewModel.requestGetUser()
+    }
+
+    private val adapter: AddContactsAdapter by lazy {
+        AddContactsAdapter(listener = object : UserItemClickListener {
             override fun onClickAdd(contact: Contact) {
-                viewModel.addContact(args.userData.user.id, contact, args.userData.accessToken)
+                viewModel.addContact(
+                    userData.user.id,
+                    contact,
+                    userData.accessToken,
+                    requireContext().checkForInternet()
+                )
             }
 
             override fun onClickContact(
                 contact: Contact,
-                transitionPairs: Array<Pair<View, String>>
+                transitionPairs: Array<Pair<View, String>>,
             ) {
                 val extras = FragmentNavigatorExtras(*transitionPairs)
                 val direction =
                     AddContactsFragmentDirections.actionAddContactsFragmentToContactProfileFragment(
                         !viewModel.supportList.contains(contact),
-                        UserWithTokens(
-                            args.userData.user,
-                            args.userData.accessToken,
-                            args.userData.refreshToken
-                        ), contact
-                )
-                closeSearchView()
+                        contact
+                    )
                 navController.navigate(direction, extras)
             }
         })
@@ -56,94 +58,77 @@ class AddContactsFragment : BaseFragment<FragmentUsersBinding>(FragmentUsersBind
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getAllUsers(args.userData.accessToken, args.userData.user)
+
         initialRecyclerView()
         setObservers()
         setListeners()
     }
 
     private fun initialRecyclerView() {
+        log("userData.accessToken:  ${userData.accessToken}")
+        viewModel.getAllUsers(
+            userData.accessToken,
+            userData.user,
+            requireContext().checkForInternet()
+        )
         binding.recyclerViewUsers.layoutManager = LinearLayoutManager(context)
         binding.recyclerViewUsers.adapter = adapter
     }
 
     private fun setObservers() {
         lifecycleScope.launch {
-            viewModel.users.flowWithLifecycle(viewLifecycleOwner.lifecycle).collect{
+            viewModel.users.flowWithLifecycle(viewLifecycleOwner.lifecycle).collect {
                 adapter.submitList(it)
             }
         }
 
-        lifecycleScope.launch {
-            viewModel.usersState.flowWithLifecycle(viewLifecycleOwner.lifecycle).collect{
-                when(it) {
-                    is ArrayDataApiResultState.Success -> {
-                        binding.progressBar.invisible()
-                    }
+        with(binding) {
+            lifecycleScope.launch {
+                viewModel.usersState.flowWithLifecycle(viewLifecycleOwner.lifecycle).collect {
+                    when (it) {
+                        is ApiStateUser.Success<*> -> {
+                            progressBar.invisible()
+                        }
 
-                    is ArrayDataApiResultState.Loading -> {
-                        binding.progressBar.visible()
-                    }
+                        is ApiStateUser.Loading -> {
+                            progressBar.visible()
+                        }
 
-                    is ArrayDataApiResultState.Initial -> Unit
+                        is ApiStateUser.Initial -> {
+                            progressBar.invisible()
+                        }
 
-                    is ArrayDataApiResultState.Error -> {
-                        binding.progressBar.invisible()
-                        binding.root.showErrorSnackBar(requireContext(), it.error)
+                        is ApiStateUser.Error -> {
+                            progressBar.invisible()
+                            root.showErrorSnackBar(requireContext(), it.error)
+                            viewModel.changeState()
+                        }
                     }
                 }
             }
+
         }
 
         lifecycleScope.launch {
-            viewModel.states.flowWithLifecycle(viewLifecycleOwner.lifecycle).collect{
+            viewModel.states.flowWithLifecycle(viewLifecycleOwner.lifecycle).collect {
                 adapter.setStates(it)
             }
         }
     }
 
     private fun setListeners() {
-        navigateBack()
-        searchView()
+        with(binding) {
+            imageSearchView.setOnClickListener { searchView() }
+            imageViewNavigationBack.setOnClickListener { navigateBack() }
+        }
     }
 
     private fun navigateBack() {
-        binding.imageViewNavigationBack.setOnClickListener {
-            navController.navigateUp()
-        }
+        navController.navigateUp()
     }
 
     private fun searchView() {
-        with(binding) {
-            imageSearchView.setOnCloseListener {
-                imageSearchView.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-                textViewUsers.visible()
-                imageViewNavigationBack.visible()
-                false
-            }
-            imageSearchView.setOnSearchClickListener {
-                imageSearchView.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
-                textViewUsers.invisible()
-                imageViewNavigationBack.invisible()
-            }
-            imageSearchView.setOnQueryTextListener(object : android.widget.SearchView.OnQueryTextListener {
-                override fun onQueryTextSubmit(query: String?): Boolean {
-                    return false
-                }
-
-                override fun onQueryTextChange(newText: String?): Boolean {
-                    textViewNoResultFound.visibleIf(viewModel.updateContactList(newText) == 0)
-                    if(newText.isNullOrEmpty()) initialRecyclerView()
-                    return false
-                }
-            } )
-        }
+        viewModel.showNotification(requireContext())
     }
 
-    private fun closeSearchView() {
-        with(binding) {
-            imageSearchView.setQuery("", false)
-            imageSearchView.isIconified= true
-        }
-    }
 }

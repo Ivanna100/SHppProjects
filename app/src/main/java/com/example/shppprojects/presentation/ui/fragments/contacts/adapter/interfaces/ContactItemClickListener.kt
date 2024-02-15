@@ -7,4 +7,5 @@ interface ContactItemClickListener {
     fun onClickDelete(contact: Contact)
     fun onClickContact(contact: Contact, transitionPairs: Array<Pair<View, String>>)
     fun onLongClick(contact: Contact)
+
 }

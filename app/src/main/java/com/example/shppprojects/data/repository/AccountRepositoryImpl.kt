@@ -1,12 +1,16 @@
 package com.example.shppprojects.data.repository
 
+import android.content.Context
 import com.example.shppprojects.R
-import com.example.shppprojects.data.api.AccountApiService
+import com.example.shppprojects.data.userdataholder.UserDataHolder
+import com.example.shppprojects.domain.network.AccountApiService
+import com.example.shppprojects.data.model.ResponseOfUser
 import com.example.shppprojects.data.model.UserRequest
 import com.example.shppprojects.domain.repository.AccountRepository
-import com.example.shppprojects.domain.state.UserApiResultState
-import com.example.shppprojects.utils.Constants.AUTHORIZATION_PREFIX
-import com.example.shppprojects.utils.ext.log
+import com.example.shppprojects.domain.state.ApiStateUser
+import com.example.shppprojects.presentation.utils.Constants
+import com.example.shppprojects.presentation.utils.Constants.AUTHORIZATION_PREFIX
+import com.example.shppprojects.presentation.utils.DataStore
 import retrofit2.http.Body
 import java.util.Date
 import javax.inject.Inject
@@ -17,67 +21,80 @@ class AccountRepositoryImpl @Inject constructor(
     private val service: AccountApiService,
 ) : AccountRepository {
 
-    override suspend fun registerUser(@Body body : UserRequest) : UserApiResultState {
+    override suspend fun registerUser(@Body body: UserRequest): ApiStateUser {
         return try {
             val response = service.registerUser(body)
-            log("response register user: $response")
-            response.data?.let { UserApiResultState.Success(it) } ?:
-            UserApiResultState.Error(R.string.invalid_request)
-        } catch (e : Exception) {
-            log("exception register user: $e")
-            UserApiResultState.Error(R.string.register_error_user_exist)
+            response.data?.let { UserDataHolder.userData = it }
+            response.data?.let { ApiStateUser.Success(it) }
+                ?: ApiStateUser.Error(R.string.invalid_request)
+        } catch (e: Exception) {
+            ApiStateUser.Error(R.string.register_error_user_exist)
         }
     }
 
-    override suspend fun authorizeUser(@Body body : UserRequest) : UserApiResultState {
+    override suspend fun authorizeUser(email: String, password: String): ApiStateUser {
         return try {
-            val response = service.authorizeUser(body)
-            response.data?.let { UserApiResultState.Success(it) } ?:
-            UserApiResultState.Error(R.string.invalid_request)
-        } catch (e : Exception) {
-            UserApiResultState.Error(R.string.not_correct_input)
+            val response = service.authorizeUser(email, password)
+            response.data?.let { UserDataHolder.userData = it }
+            response.data?.let { ApiStateUser.Success(it) }
+                ?: ApiStateUser.Error(R.string.invalid_request)
+        } catch (e: Exception) {
+            ApiStateUser.Error(R.string.not_correct_input)
         }
     }
 
-    override suspend fun getUser(userId : Long, accessToken : String) : UserApiResultState {
+    override suspend fun getUser(userId: Long, accessToken: String): ApiStateUser {
         return try {
             val response = service.getUser(userId, "$AUTHORIZATION_PREFIX $accessToken")
-            response.data?.let { UserApiResultState.Success(it) } ?:
-            UserApiResultState.Error(R.string.invalid_request)
-        } catch (e : Exception) {
-            UserApiResultState.Error(R.string.invalid_request)
+            response.data?.let { ApiStateUser.Success(it) }
+                ?: ApiStateUser.Error(R.string.invalid_request)
+        } catch (e: Exception) {
+            ApiStateUser.Error(R.string.invalid_request)
         }
     }
 
-    override suspend fun editUser(userId: Long, accessToken: String, name : String, career: String?,
-                                  phone: String, address: String?, birthday: Date?) : UserApiResultState {
+    override suspend fun editUser(
+        userId: Long,
+        accessToken: String,
+        name: String,
+        career: String?,
+        phone: String,
+        address: String?,
+        birthday: Date?,
+        refreshToken: String,
+    ): ApiStateUser {
         return try {
-            val response = service.editUser(userId, "$AUTHORIZATION_PREFIX $accessToken",
-                name, career, phone, address, birthday)
-            log("response edit user: $response")
-            response.data?.let { UserApiResultState.Success(it) } ?:
-            UserApiResultState.Error(R.string.invalid_request)
-        } catch (e : Exception) {
-            log("edit user exception: ${e.toString()}")
-            UserApiResultState.Error(R.string.invalid_request)
+            val response = service.editUser(
+                userId,
+                "$AUTHORIZATION_PREFIX $accessToken",
+                name,
+                career,
+                phone,
+                address,
+                birthday
+            )
+            response.data?.let {
+                UserDataHolder.userData = ResponseOfUser.Data(it.user, accessToken, refreshToken)
+            }
+            response.data?.let { ApiStateUser.Success(it) }
+                ?: ApiStateUser.Error(R.string.invalid_request)
+        } catch (e: Exception) {
+            ApiStateUser.Error(R.string.invalid_request)
         }
     }
 
-    override suspend fun autoLogin(email : String, password : String) : UserApiResultState {
+    override suspend fun autoLogin(context: Context): ApiStateUser {
         return try {
             val response = service.authorizeUser(
-                UserRequest(
-                    email = email,
-                    password = password
-                )
+                DataStore.getDataFromKey(context, Constants.KEY_EMAIL).toString(),
+                DataStore.getDataFromKey(context, Constants.KEY_PASSWORD).toString()
             )
-            log("autologin: $response")
-            response.data?.let { UserApiResultState.Success(it) } ?: UserApiResultState.Error(
+            response.data?.let { UserDataHolder.userData = it }
+            response.data?.let { ApiStateUser.Success(it) } ?: ApiStateUser.Error(
                 R.string.invalid_request
             )
-        } catch (e : Exception) {
-            log("autologin exception: $e")
-            UserApiResultState.Error(R.string.automatic_login_error)
+        } catch (e: Exception) {
+            ApiStateUser.Error(R.string.automatic_login_error)
         }
     }
 

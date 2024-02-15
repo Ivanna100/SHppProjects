@@ -146,12 +146,12 @@
         android:text="@string/don_t_have_account"
         android:textColor="@color/gray"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/textViewSignUpSignIn"
+        app:layout_constraintEnd_toStartOf="@id/text_view_sign_up"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatTextView
-        android:id="@+id/textViewSignUpSignIn"
+        android:id="@+id/text_view_sign_up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/sign_up"

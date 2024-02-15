@@ -8,23 +8,28 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.example.shppprojects.R
 import com.example.shppprojects.data.model.Contact
+import com.example.shppprojects.data.model.ResponseOfUser
 import com.example.shppprojects.databinding.FragmentDetailViewBinding
-import com.example.shppprojects.domain.state.ArrayDataApiResultState
-import com.example.shppprojects.presentation.ui.fragments.BaseFragment
-import com.example.shppprojects.utils.Constants
-import com.example.shppprojects.utils.ext.gone
-import com.example.shppprojects.utils.ext.loadImage
-import com.example.shppprojects.utils.ext.showErrorSnackBar
-import com.example.shppprojects.utils.ext.visible
+import com.example.shppprojects.domain.state.ApiStateUser
+import com.example.shppprojects.presentation.ui.base.BaseFragment
+import com.example.shppprojects.presentation.utils.Constants
+import com.example.shppprojects.presentation.utils.ext.checkForInternet
+import com.example.shppprojects.presentation.utils.ext.gone
+import com.example.shppprojects.presentation.utils.ext.loadImage
+import com.example.shppprojects.presentation.utils.ext.showErrorSnackBar
+import com.example.shppprojects.presentation.utils.ext.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ContactProfileFragment : BaseFragment<FragmentDetailViewBinding> (
-    FragmentDetailViewBinding:: inflate
-){
+class ContactProfileFragment : BaseFragment<FragmentDetailViewBinding>(
+    FragmentDetailViewBinding::inflate
+) {
     private val args: ContactProfileFragmentArgs by navArgs()
     private val viewModel: ContactProfileViewModel by viewModels()
+    private val userData: ResponseOfUser.Data by lazy {
+        viewModel.requestGetUser()
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -34,7 +39,7 @@ class ContactProfileFragment : BaseFragment<FragmentDetailViewBinding> (
         setSharedElementsTransition(args.Contact)
     }
 
-    private fun setListeners(){
+    private fun setListeners() {
         navigationBack()
         addToContacts()
     }
@@ -45,34 +50,41 @@ class ContactProfileFragment : BaseFragment<FragmentDetailViewBinding> (
         }
     }
 
-    private fun addToContacts(){
-        if(args.isNewUser) {
-            binding.buttonMessage.setOnClickListener {
-                viewModel.addContact(args.userData.user.id, args.Contact, args.userData.accessToken)
+    private fun addToContacts() {
+        binding.buttonMessage.setOnClickListener {
+            if (args.isNewUser) {
+                viewModel.addContact(
+                    userData.user.id,
+                    args.Contact,
+                    userData.accessToken,
+                    requireContext().checkForInternet()
+                )
             }
         }
     }
 
     private fun setObserver() {
-        lifecycleScope.launch {
-            viewModel.usersState.flowWithLifecycle(viewLifecycleOwner.lifecycle).collect{
-                when(it) {
-                    is ArrayDataApiResultState.Initial -> Unit
+        with(binding) {
+            lifecycleScope.launch {
+                viewModel.usersState.flowWithLifecycle(viewLifecycleOwner.lifecycle).collect {
+                    when (it) {
+                        is ApiStateUser.Initial -> Unit
 
-                    is ArrayDataApiResultState.Loading -> {
-                        binding.progressBar.visible()
-                    }
+                        is ApiStateUser.Loading -> {
+                            progressBar.visible()
+                        }
 
-                    is ArrayDataApiResultState.Success -> {
-                        with(binding) {
+                        is ApiStateUser.Success<*> -> {
                             progressBar.gone()
                             buttonMessageTop.gone()
                             buttonMessage.text = getString(R.string.message)
                         }
-                    }
 
-                    is ArrayDataApiResultState.Error -> {
-                        binding.root.showErrorSnackBar(requireContext(), it.error)
+                        is ApiStateUser.Error -> {
+                            progressBar.gone()
+                            root.showErrorSnackBar(requireContext(), it.error)
+                            viewModel.changeState()
+                        }
                     }
                 }
             }
@@ -81,7 +93,7 @@ class ContactProfileFragment : BaseFragment<FragmentDetailViewBinding> (
 
     private fun setProfile(contact: Contact) {
         with(binding) {
-            if(args.isNewUser) {
+            if (args.isNewUser) {
                 buttonMessageTop.visible()
                 buttonMessage.text = getString(R.string.add_to_my_contacts)
             }
@@ -104,4 +116,5 @@ class ContactProfileFragment : BaseFragment<FragmentDetailViewBinding> (
         sharedElementEnterTransition = animation
         sharedElementReturnTransition = animation
     }
+
 }

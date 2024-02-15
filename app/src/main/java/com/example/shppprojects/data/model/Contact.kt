@@ -9,5 +9,5 @@ data class Contact(
     val career: String? = null,
     val photo: String? = null,
     val address: String? = null,
-    val id: Long = 0
+    val id: Long = 0,
 ) : Parcelable

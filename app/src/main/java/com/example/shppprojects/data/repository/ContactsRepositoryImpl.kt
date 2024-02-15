@@ -1,81 +1,89 @@
 package com.example.shppprojects.data.repository
 
 import com.example.shppprojects.R
-import com.example.shppprojects.data.UserDataHolder
-import com.example.shppprojects.data.api.ContactsApiService
+import com.example.shppprojects.data.userdataholder.UserDataHolder
+import com.example.shppprojects.domain.network.ContactsApiService
+import com.example.shppprojects.data.database.contactslist.ContactsDbEntity
+import com.example.shppprojects.data.database.contactslist.RoomContactsListRepository
+import com.example.shppprojects.data.database.userslist.RoomUsersListRepository
+import com.example.shppprojects.data.database.userslist.UsersDbEntity
 import com.example.shppprojects.data.model.Contact
 import com.example.shppprojects.data.model.UserData
 import com.example.shppprojects.domain.repository.ContactsRepository
-import com.example.shppprojects.domain.state.ArrayDataApiResultState
-import com.example.shppprojects.utils.Constants.AUTHORIZATION_PREFIX
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.example.shppprojects.domain.state.ApiStateUser
+import com.example.shppprojects.presentation.utils.Constants.AUTHORIZATION_PREFIX
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class ContactsRepositoryImpl @Inject constructor(
-    private val service: ContactsApiService
+    private val service: ContactsApiService,
+    private val roomUsersListRepository: RoomUsersListRepository,
+    private val roomContactsListRepository: RoomContactsListRepository,
 ) : ContactsRepository {
 
-    override suspend fun getAllUsers(accessToken: String, user : UserData): ArrayDataApiResultState {
+    override suspend fun getAllUsers(accessToken: String, user: UserData): ApiStateUser {
         return try {
             val response = service.getAllUsers("$AUTHORIZATION_PREFIX $accessToken")
-            val contacts = UserDataHolder.getContacts()
+            val contacts = UserDataHolder.serverContacts
             val filteredUsers = response.data.users?.filter {
                 it.name != null && it.email != user.email && !contacts.contains(it.toContact())
             }
-            val users : MutableStateFlow<List<Contact>> = MutableStateFlow(filteredUsers?.map {
-                it.toContact()} ?: emptyList())
-            UserDataHolder.setServerList(users)
-            response.data.let { ArrayDataApiResultState.Success(it.users) }
+            val users = filteredUsers?.map { it.toContact() } ?: emptyList()
+            UserDataHolder.serverUsers = users
+            roomUsersListRepository.addUsers(users.map { contact -> UsersDbEntity.toEntity(contact) })
+            response.data.let { ApiStateUser.Success(it.users) }
         } catch (e: Exception) {
-            ArrayDataApiResultState.Error(R.string.invalid_request)
+            ApiStateUser.Error(R.string.invalid_request)
         }
     }
 
     override suspend fun addContact(
         userId: Long,
         accessToken: String,
-        contact: Contact
-    ): ArrayDataApiResultState {
-        val states : ArrayList<Pair<Long, ArrayDataApiResultState>> = ArrayList()
-        states.add(Pair(contact.id, ArrayDataApiResultState.Loading))
+        contact: Contact,
+    ): ApiStateUser {
+        val states: ArrayList<Pair<Long, ApiStateUser>> = ArrayList()
+        states.add(Pair(contact.id, ApiStateUser.Loading))
         return try {
             val response =
-                service.addContact(userId, "$AUTHORIZATION_PREFIX $accessToken", contact.id)
-            states[states.size-1] =
-                Pair(contact.id, ArrayDataApiResultState.Success(response.data.contacts))
-            UserDataHolder.setStates(states[states.size - 1])
-            response.data.let { ArrayDataApiResultState.Success(it.contacts) }
+                service.addContact(
+                    userId,
+                    "$AUTHORIZATION_PREFIX $accessToken",
+                    contact.id
+                )
+            UserDataHolder.states.add(contact.id to ApiStateUser.Success(response.data.users))
+            response.data.let { ApiStateUser.Success(it.users) }
         } catch (e: Exception) {
-            ArrayDataApiResultState.Error(R.string.invalid_request)
+            ApiStateUser.Error(R.string.invalid_request)
         }
     }
 
     override suspend fun deleteContact(
         userId: Long,
         accessToken: String,
-        contactId : Long
-    ): ArrayDataApiResultState {
+        contact: Contact,
+    ): ApiStateUser {
         return try {
             val response = service.deleteContact(
-                userId, contactId,"$AUTHORIZATION_PREFIX $accessToken"
+                userId, contact.id, "$AUTHORIZATION_PREFIX $accessToken"
 
             )
-            response.data.let { ArrayDataApiResultState.Success(it.contacts) }
+            response.data.let { ApiStateUser.Success(it.users) }
         } catch (e: Exception) {
-            ArrayDataApiResultState.Error(R.string.invalid_request)
+            ApiStateUser.Error(R.string.invalid_request)
         }
     }
 
-    override suspend fun getUserContacts(userId: Long, accessToken: String): ArrayDataApiResultState {
+    override suspend fun getUserContacts(userId: Long, accessToken: String): ApiStateUser {
         return try {
             val response = service.getUserContacts(userId, "$AUTHORIZATION_PREFIX $accessToken")
-            UserDataHolder.setContactList((response.data.contacts?.map { it.toContact() }
-                ?: emptyList()) as ArrayList<Contact>)
-            response.data.let { ArrayDataApiResultState.Success(it.contacts) }
+            val users = response.data.contacts?.map { it.toContact() } ?: emptyList()
+            UserDataHolder.serverContacts = users
+            roomContactsListRepository.addContacts(users.map { ContactsDbEntity.toEntity(it) })
+            response.data.let { ApiStateUser.Success(it.contacts) }
         } catch (e: Exception) {
-            ArrayDataApiResultState.Error(R.string.invalid_request)
+            ApiStateUser.Error(R.string.invalid_request)
         }
     }
 

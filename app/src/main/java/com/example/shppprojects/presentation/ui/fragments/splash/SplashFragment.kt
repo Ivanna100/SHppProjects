@@ -5,20 +5,20 @@ import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
-import com.example.shppprojects.data.model.UserWithTokens
+import com.example.shppprojects.R
 import com.example.shppprojects.databinding.FragmentSplashBinding
-import com.example.shppprojects.domain.state.UserApiResultState
-import com.example.shppprojects.presentation.ui.fragments.BaseFragment
-import com.example.shppprojects.utils.Constants
-import com.example.shppprojects.utils.DataStore
-import com.example.shppprojects.utils.ext.showErrorSnackBar
+import com.example.shppprojects.domain.state.ApiStateUser
+import com.example.shppprojects.presentation.ui.base.BaseFragment
+import com.example.shppprojects.presentation.utils.ext.invisible
+import com.example.shppprojects.presentation.utils.ext.visible
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding::inflate) {
 
-    private val viewModel : SplashViewModel by viewModels()
+    private val viewModel: SplashViewModel by viewModels()
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -29,11 +29,8 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
 
     private fun isAutoLogin() {
         lifecycleScope.launch {
-            val email = DataStore.getDataFromKey(requireContext(), Constants.KEY_EMAIL)
-            val password = DataStore.getDataFromKey(requireContext(), Constants.KEY_PASSWORD)
-            if(DataStore.getDataFromKey(requireContext(), Constants.KEY_REMEMBER_ME) != null &&
-                email != null && password != null) {
-                viewModel.autoLogin(email, password)
+            if (viewModel.isAutoLogin(requireContext())) {
+                viewModel.autoLogin(requireContext())
             } else {
                 val direction = SplashFragmentDirections.actionSplashFragmentToSignInFragment()
                 navController.navigate(direction)
@@ -44,24 +41,28 @@ class SplashFragment : BaseFragment<FragmentSplashBinding>(FragmentSplashBinding
     private fun setObserver() {
         lifecycleScope.launch {
             viewModel.authorizationState.flowWithLifecycle(viewLifecycleOwner.lifecycle).collect {
-                when(it) {
-                    is UserApiResultState.Success -> {
-                        val direction = SplashFragmentDirections.actionSplashFragmentToViewPagerFragment(
-                            UserWithTokens(
-                                it.userData.user,
-                                it.userData.accessToken,
-                                it.userData.refreshToken
-                            )
-                        )
+                when (it) {
+                    is ApiStateUser.Success<*> -> {
+                        val direction =
+                            SplashFragmentDirections.actionSplashFragmentToViewPagerFragment()
                         navController.navigate(direction)
                     }
 
-                    is UserApiResultState.Loading -> Unit
+                    is ApiStateUser.Loading -> {
+                        binding.progressBar.visible()
+                    }
 
-                    is UserApiResultState.Initial -> Unit
+                    is ApiStateUser.Initial -> Unit
 
-                    is UserApiResultState.Error -> {
-                        binding.root.showErrorSnackBar(requireContext(), it.error)
+                    is ApiStateUser.Error -> {
+                        binding.progressBar.invisible()
+                        Snackbar.make(
+                            binding.root,
+                            R.string.no_internet_connection,
+                            Snackbar.LENGTH_INDEFINITE
+                        ).setAction(R.string.repeat) {
+                            viewModel.autoLogin(requireContext())
+                        }.show()
                     }
                 }
             }

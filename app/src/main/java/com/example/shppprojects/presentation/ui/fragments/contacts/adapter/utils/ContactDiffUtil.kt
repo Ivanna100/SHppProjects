@@ -12,4 +12,5 @@ class ContactDiffUtil : DiffUtil.ItemCallback<Contact>() {
     override fun areContentsTheSame(oldItem: Contact, newItem: Contact): Boolean {
         return oldItem.id == newItem.id
     }
+
 }
